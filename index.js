@@ -6,7 +6,8 @@ var Client = require('./lib/client').Client;
 
 var _defaultClientSetting = {
   timeout: 30000,
-  json: true // false means provided data will be base64 encoded/decoded
+  json: true, // false means provided data will be base64 encoded/decoded
+  base64: false // if true, forces base64 encoding
 };
 
 // default client is created lazily on first get or set request

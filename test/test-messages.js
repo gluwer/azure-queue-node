@@ -62,6 +62,26 @@ describe('default client', function() {
     });
   });
 
+  it('should put JSON message in queue as base64 if forced to do so', function(done) {
+    var azure = nock('http://127.0.0.1:10001')
+      .post('/devstoreaccount1/testqueue/messages', "<QueueMessage><MessageText>eyJhYmMiOjF9</MessageText></QueueMessage>")
+      .reply(201, "", { 'transfer-encoding': 'chunked',
+        server: 'Windows-Azure-Queue/1.0 Microsoft-HTTPAPI/2.0',
+        'x-ms-request-id': 'd8bedef6-212f-459d-83c6-1c73c230980e',
+        'x-ms-version': '2014-02-14',
+        date: 'Thu, 03 Jul 2014 07:13:04 GMT' });
+
+    client.putMessage('testqueue', {abc:1}, {
+      base64: true
+    }, function(err, data) {
+      expect(err).to.be.null;
+      expect(data).to.be.undefined;
+      expect(azure.isDone()).to.be.true;
+
+      done();
+    });
+  });
+
   it('should return error when messageTTL is invalid', function(done) {
     var azure = nock('http://127.0.0.1:10001')
       .post('/devstoreaccount1/testqueue/messages?visibilitytimeout=60&messagettl=691200', "<QueueMessage><MessageText>[1,2,3]</MessageText></QueueMessage>")
@@ -235,6 +255,36 @@ describe('default client', function() {
           "insertionTime": new Date("Thu, 03 Jul 2014 08:54:30 GMT"),
           "messageId": "f00c98a4-1547-4d65-a5ea-ec233a85d7af",
           "messageText": '♩ust testing ☑',
+          "popReceipt": "sK52prNk0QgBAAAA",
+          "timeNextVisible": new Date("Thu, 03 Jul 2014 08:55:19 GMT")
+        }
+      ]);
+      expect(azure.isDone()).to.be.true;
+
+      done();
+    });
+  });
+
+  it('should get one message from queue with json=true but base64 encoded', function(done) {
+    var azure = nock('http://127.0.0.1:10001')
+      .get('/devstoreaccount1/testqueue/messages')
+      .reply(200, "﻿<?xml version=\"1.0\" encoding=\"utf-8\"?><QueueMessagesList><QueueMessage><MessageId>f00c98a4-1547-4d65-a5ea-ec233a85d7af</MessageId><InsertionTime>Thu, 03 Jul 2014 08:54:30 GMT</InsertionTime><ExpirationTime>Thu, 10 Jul 2014 08:54:30 GMT</ExpirationTime><DequeueCount>1</DequeueCount><PopReceipt>sK52prNk0QgBAAAA</PopReceipt><TimeNextVisible>Thu, 03 Jul 2014 08:55:19 GMT</TimeNextVisible><MessageText>eyJhYmMiOjF9</MessageText></QueueMessage></QueueMessagesList>", { 'cache-control': 'no-cache',
+        'transfer-encoding': 'chunked',
+        'content-type': 'application/xml',
+        server: 'Windows-Azure-Queue/1.0 Microsoft-HTTPAPI/2.0',
+        'x-ms-request-id': '51e22df0-d77a-4c04-a5f9-0a8a0f885ca4',
+        'x-ms-version': '2014-02-14',
+        date: 'Thu, 03 Jul 2014 08:54:49 GMT' });
+
+    client.getMessages('testqueue', {base64: true}, function(err, data) {
+      expect(err).to.be.null;
+      expect(data).to.be.deep.equal([
+        {
+          "dequeueCount": 1,
+          "expirationTime": new Date("Thu, 10 Jul 2014 08:54:30 GMT"),
+          "insertionTime": new Date("Thu, 03 Jul 2014 08:54:30 GMT"),
+          "messageId": "f00c98a4-1547-4d65-a5ea-ec233a85d7af",
+          "messageText": {abc:1},
           "popReceipt": "sK52prNk0QgBAAAA",
           "timeNextVisible": new Date("Thu, 03 Jul 2014 08:55:19 GMT")
         }

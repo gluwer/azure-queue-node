@@ -109,6 +109,7 @@ Underlying HTTP request related (passed without changes to request module):
 Azure Queue Storage related:
 
 * `json` (bool) - if set to `true` (default), message is JSON encoded/decoded; otherwise it is base64 encoded/decoded
+* `base64` (bool) - if set to `true` (`false` by default) forces JSON message to be base64 encoded (for compatibility if using older clients)
 * `retry` (false/object/function) - set to `false` to turn off any retry policy; provide a function for custom retry logic or use object to change parameter of build in retry logic
 
 Retry options:

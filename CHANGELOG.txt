@@ -1,3 +1,7 @@
+1.1.0
+Added base64 encoding to JSON objects (as some Queue clients only support base64). By default is set to false.
+Fixed base64 decoding in some cases.
+
 1.0.2
 Fixed clearMessages() function -- options param was in DOCS, but weren't supported in code.
 
