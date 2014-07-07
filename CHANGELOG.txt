@@ -1,2 +1,5 @@
+1.0.1
+Decode a base64 to object if JSON is expected (to allow using VS2013 queue browser in testing or Azure Scheduler queue)
+
 1.0.0
 Initial release
