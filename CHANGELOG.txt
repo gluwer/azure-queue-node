@@ -1,3 +1,6 @@
+1.0.2
+Fixed clearMessages() function -- options param was in DOCS, but weren't supported in code.
+
 1.0.1
 Decode a base64 to object if JSON is expected (to allow using VS2013 queue browser in testing or Azure Scheduler queue)
 
