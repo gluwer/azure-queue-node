@@ -47,7 +47,7 @@ The same method allows to set other default client settings (see *Client setting
 
 ```javascript
 var azureQueue = require('azure-queue-node');
-var defaultClient = azureTable.getDefaultClient();
+var defaultClient = azureQueue.getDefaultClient();
 
 // use the client to create the queue
 defaultClient.createQueue('queueName', true, cb);
